@@ -1,0 +1,75 @@
+version: "3.8"
+
+services:
+  api-prueba:
+    container_name: api-prueba
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - "./API-Prueba:/app"
+    command: python app.py
+    ports:
+      - "5000:5000"
+    networks:
+      - my-network
+
+  temperature-humidity-sensors:
+    container_name: temperature-humidity-sensors
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - "./Temperature-Humidity Sensors:/app"
+      - "./api_url.txt:/app/api_url.txt"
+    command: python -u app.py  # Ejecución en modo stream
+    depends_on:
+      - api-prueba
+    networks:
+      - my-network
+
+  occupancy-sensors:
+    container_name: occupancy-sensors
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - "./Occupancy Sensors:/app"
+      - "./api_url.txt:/app/api_url.txt"
+    command: python -u app.py  # Ejecución en modo stream
+    depends_on:
+      - api-prueba
+    networks:
+      - my-network
+
+  power-consumption-meters:
+    container_name: power-consumption-meters
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - "./Power Consumption Meters:/app"
+      - "./api_url.txt:/app/api_url.txt"
+    command: python -u app.py  # Ejecución en modo stream
+    depends_on:
+      - api-prueba
+    networks:
+      - my-network
+
+  security-cameras:
+    container_name: security-cameras
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - "./Security Cameras:/app"
+      - "./api_url.txt:/app/api_url.txt"
+    command: python -u app.py  # Ejecución en modo stream
+    depends_on:
+      - api-prueba
+    networks:
+      - my-network
+
+networks:
+  my-network:
+    driver: bridge
