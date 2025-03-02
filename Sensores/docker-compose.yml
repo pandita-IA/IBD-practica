@@ -1,6 +1,8 @@
 version: "3.8"
 
 services:
+
+# API
   api-prueba:
     container_name: api-prueba
     build:
@@ -14,6 +16,7 @@ services:
     networks:
       - my-network
 
+# Sensors
   temperature-humidity-sensors:
     container_name: temperature-humidity-sensors
     build:
@@ -69,6 +72,74 @@ services:
       - api-prueba
     networks:
       - my-network
+
+# RabbitMQ
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"  # Puerto para comunicación AMQP
+      - "15672:15672" # Puerto para la interfaz web de RabbitMQ
+    networks:
+      - my-network
+
+# Consumers
+  temperature-consumer:
+    container_name: temperature-consumer
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - "./Consumers:/app"  # Monta la carpeta de consumidores
+      - "./csv_data:/csv_data"  # Carpeta para persistencia de CSVs
+    command: python /app/temperature_consumer.py
+    depends_on:
+      - rabbitmq
+    networks:
+      - my-network
+
+  occupancy-consumer:
+    container_name: occupancy-consumer
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - "./Consumers:/app"  # Monta la carpeta de consumidores
+      - "./csv_data:/csv_data"  # Carpeta para persistencia de CSVs
+    command: python /app/occupancy_consumer.py
+    depends_on:
+      - rabbitmq
+    networks:
+      - my-network
+
+  power-consumer:
+    container_name: power-consumer
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - "./Consumers:/app"  # Monta la carpeta de consumidores
+      - "./csv_data:/csv_data"  # Carpeta para persistencia de CSVs
+    command: python /app/power_consumer.py
+    depends_on:
+      - rabbitmq
+    networks:
+      - my-network
+
+  security-consumer:
+    container_name: security-consumer
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - "./Consumers:/app"  # Monta la carpeta de consumidores
+      - "./csv_data:/csv_data"  # Carpeta para persistencia de CSVs
+    command: python /app/security_consumer.py
+    depends_on:
+      - rabbitmq
+    networks:
+      - my-network
+
 
 networks:
   my-network:
