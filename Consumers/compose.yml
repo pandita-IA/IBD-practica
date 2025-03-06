@@ -1,0 +1,74 @@
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: password
+  
+  publisher:
+    image: bigdatainf/python:latest
+    volumes:
+      - ./publisher:/app
+    working_dir: /app
+    command: python -u publish_prueba.py
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_USERNAME=user
+      - RABBITMQ_PASSWORD=password
+    depends_on:
+      - rabbitmq
+
+  consumer_occupancy:
+    image: bigdatainf/python:latest
+    volumes:
+      - ./consumer:/app
+    working_dir: /app
+    command: python -u occupancy_consumer.py
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_USERNAME=user
+      - RABBITMQ_PASSWORD=password
+    depends_on:
+      - rabbitmq
+
+  consumer_power:
+    image: bigdatainf/python:latest
+    volumes:
+      - ./consumer:/app
+    working_dir: /app
+    command: python -u power_consumer.py
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_USERNAME=user
+      - RABBITMQ_PASSWORD=password
+    depends_on:
+      - rabbitmq
+
+  consumer_security:
+    image: bigdatainf/python:latest
+    volumes:
+      - ./consumer:/app
+    working_dir: /app
+    command: python -u security_consumer.py
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_USERNAME=user
+      - RABBITMQ_PASSWORD=password
+    depends_on:
+      - rabbitmq
+
+  consumer_temperature:
+    image: bigdatainf/python:latest
+    volumes:
+      - ./consumer:/app
+    working_dir: /app
+    command: python -u temperature_consumer.py
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_USERNAME=user
+      - RABBITMQ_PASSWORD=password
+    depends_on:
+      - rabbitmq
