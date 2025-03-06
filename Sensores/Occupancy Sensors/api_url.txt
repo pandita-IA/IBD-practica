@@ -1,0 +1,1 @@
+http://occupancy-sensors:5000/sensor_data

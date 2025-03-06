@@ -1,0 +1,1 @@
+http://power-consumption-meters:5000/sensor_data
