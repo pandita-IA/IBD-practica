@@ -1,1 +1,0 @@
-http://security-cameras:5000/sensor_data

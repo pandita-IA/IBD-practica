@@ -8,12 +8,4 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-
-# NOTA:
-# No copiamos app.py de cada sensor aquí, 
-# porque lo montaremos como volumen según el servicio.
-
 CMD ["python", "app.py"]
-
-
-

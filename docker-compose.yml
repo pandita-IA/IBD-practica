@@ -9,4 +9,177 @@ services:
       RABBITMQ_DEFAULT_USER: user
       RABBITMQ_DEFAULT_PASS: password
 
-  
+  api:
+    image: python:3.8
+    container_name: api
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    depends_on:
+      - rabbitmq
+    networks:
+      - my-network
+    ports:
+      - "5000:5000"
+
+    volumes:
+      - ./api:/app
+    command: python -u app.py  # Ejecución en modo stream
+      
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://api:5000/health"]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+
+  temperature-humidity-sensors:
+    env_file:
+      - .env  
+    container_name: temperature-humidity-sensors
+    build:
+      context: ./Sensores
+      dockerfile: Dockerfile
+    volumes:
+      - "./Sensores/Temperature-Humidity Sensors:/app"
+    command: python -u app.py  # Ejecución en modo stream
+    depends_on:
+      - api
+    networks:
+      - my-network
+
+  occupancy-sensors:
+    env_file:
+      - .env
+    container_name: occupancy-sensors
+    build:
+      context: ./Sensores
+      dockerfile: Dockerfile
+    volumes:
+      - "./Sensores/Occupancy Sensors:/app"
+    command: python -u app.py  # Ejecución en modo stream
+    depends_on:
+      - api
+    networks:
+      - my-network
+
+
+  power-consumption-meters:
+    env_file:
+      - .env
+    container_name: power-consumption-meters
+    build:
+      context: ./Sensores
+      dockerfile: Dockerfile
+    volumes:
+      - "./Sensores/Power:/app"
+    command: python -u app.py  # Ejecución en modo stream
+    depends_on:
+      - api
+    networks:
+      - my-network
+
+  security-cameras:
+    env_file:
+      - .env  
+    container_name: security-cameras
+    build:
+      context: ./Sensores
+      dockerfile: Dockerfile
+    volumes:
+      - "./Sensores/Security Cameras:/app"
+    command: python -u app.py  # Ejecución en modo stream
+    depends_on:
+      - api
+    networks:
+      - my-network
+
+  ocupacion:
+    container_name: ocupacion
+    build:
+      context: ./Consumidores
+      dockerfile: Dockerfile
+    volumes:
+      - "./Consumidores/Ocupacion:/app"
+    networks:
+      - my-network
+    
+    command: python -u app.py  # Ejecución en modo stream
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://ocupacion:5000/health"]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+    
+    ports:
+      - "5001:5000"
+
+
+  temperatura:
+    container_name: temperatura
+    build:
+      context: ./Consumidores
+      dockerfile: Dockerfile
+    volumes:
+      - "./Consumidores/Temperature:/app"
+    networks:
+      - my-network
+    
+    command: python -u app.py  # Ejecución en modo stream
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://temperatura:5000/health"]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+    
+    ports:
+      - "5002:5000"
+
+  security:
+    container_name: security
+    build:
+      context: ./Consumidores
+      dockerfile: Dockerfile
+    volumes:
+      - "./Consumidores/Security:/app"
+    networks:
+      - my-network
+    command: python -u app.py  # Ejecución en modo stream
+
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://security:5000/health"]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+    
+    ports:
+      - "5003:5000"
+
+  power:
+    container_name: power
+    build:
+      context: ./Consumidores
+      dockerfile: Dockerfile
+    volumes:
+      - "./Consumidores/Power:/app"
+    networks:
+      - my-network
+
+
+    command: python -u app.py  # Ejecución en modo stream
+
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://power:5000/health"]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+    ports:
+      - "5004:5000"
+
+networks:
+  my-network:
+    driver: bridge

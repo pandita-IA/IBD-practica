@@ -1,1 +1,0 @@
-http://temperature-humidity-sensors:5000/sensor_data
