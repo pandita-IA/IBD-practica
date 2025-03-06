@@ -1,11 +1,10 @@
 import time
 import random
 import requests
+import os
 
 def read_api_url():
-    # Lee la URL desde el archivo 'api_url.txt'
-    with open("/app/api_url.txt", "r") as f:
-        return f.read().strip()
+    return os.getenv('API_URL', 'http://api-prueba:5000/sensor-data')
 
 def simulate_sensor():
     status = random.choice(["active", "inactive"])
