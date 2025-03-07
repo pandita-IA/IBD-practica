@@ -2,7 +2,6 @@ services:
 
   temperature-humidity-sensors:
 
-    container_name: temperature-humidity-sensors
     image: pandira/practica1-sensores:v1.0.0   
     # command: ["./wait-for-it.sh", "api:5000", "--", "python", "-u", "app.py"]
     environment:
@@ -17,7 +16,6 @@ services:
       - sensores
 
   occupancy-sensors:
-    container_name: occupancy-sensors
     image: pandira/practica1-sensores:v1.0.0   
     environment:
       API_URL: "http://api:5000/sensor-data"
@@ -33,7 +31,6 @@ services:
 
 
   power-consumption-meters:
-    container_name: power-consumption-meters
     image: pandira/practica1-sensores:v1.0.0
     environment:
       API_URL: "http://api:5000/sensor-data"
@@ -49,7 +46,6 @@ services:
       - sensores
 
   security-cameras:
-    container_name: security-cameras
     image: pandira/practica1-sensores:v1.0.0
 
     environment:
