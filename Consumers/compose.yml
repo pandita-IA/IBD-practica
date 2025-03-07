@@ -25,6 +25,7 @@ services:
     image: bigdatainf/python:latest
     volumes:
       - ./consumer:/app
+      - ./data:/data
     working_dir: /app
     command: python -u occupancy_consumer.py
     environment:
@@ -38,6 +39,7 @@ services:
     image: bigdatainf/python:latest
     volumes:
       - ./consumer:/app
+      - ./data:/data
     working_dir: /app
     command: python -u power_consumer.py
     environment:
@@ -51,6 +53,7 @@ services:
     image: bigdatainf/python:latest
     volumes:
       - ./consumer:/app
+      - ./data:/data
     working_dir: /app
     command: python -u security_consumer.py
     environment:
@@ -64,11 +67,32 @@ services:
     image: bigdatainf/python:latest
     volumes:
       - ./consumer:/app
+      - ./data:/data
     working_dir: /app
     command: python -u temperature_consumer.py
     environment:
       - RABBITMQ_HOST=rabbitmq
       - RABBITMQ_USERNAME=user
       - RABBITMQ_PASSWORD=password
+    depends_on:
+      - rabbitmq
+
+  api:
+    image: bigdatainf/python:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./api:/app
+      - ./data:/data  # CSVs
+    working_dir: /app
+    command: python -u api.py
+    environment:
+      - PATH_FILE_OCUPACION=/data/occupancy.csv
+      - PATH_FILE_POWER=/data/power.csv
+      - PATH_FILE_SECURITY=/data/security.csv
+      - PATH_FILE_TEMPERATURE=/data/temperature.csv
+    ports:
+      - "5000:5000"
     depends_on:
       - rabbitmq
