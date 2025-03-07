@@ -18,12 +18,27 @@ channel.queue_declare(queue=QUEUE_NAME, durable=True)
 
 CSV_FILE = f"../data/{QUEUE_NAME}.csv"
 def callback(ch, method, properties, body):
-    print(f" [x] Received {body}")
+    data = json.loads(body)
+    # Para ignorar header:
+    data_filtered = {key: value for key, value in data.items() if key != "header"}
+    print(f"Received: {data_filtered}")
+    
+    # Guardar en CSV
+    file_exists = os.path.isfile(CSV_FILE)
     with open(CSV_FILE, mode='a', newline='') as file:
-        writer = csv.writer(file)
-        writer.writerow([body])
+        writer = csv.DictWriter(file, fieldnames=data_filtered.keys())
+        if not file_exists:
+            writer.writeheader()
+        writer.writerow(data_filtered)
+
+    ch.basic_ack(delivery_tag=method.delivery_tag)
+    # print(f" [x] Received {body}")
+    # with open(CSV_FILE, mode='a', newline='') as file:
+    #     writer = csv.writer(file)
+    #     writer.writerow([body])
+
 
 # Ejecución
-channel.basic_consume(queue=QUEUE_NAME, on_message_callback=callback, auto_ack=True)
+channel.basic_consume(queue=QUEUE_NAME, on_message_callback=callback, auto_ack=False)
 print(f' [*] Waiting for messages at queue "{QUEUE_NAME}". To exit press CTRL+C.')
 channel.start_consuming()
