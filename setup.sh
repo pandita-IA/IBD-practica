@@ -37,4 +37,11 @@ for COMPOSE_FILE in "${COMPOSE_FILES[@]}"; do
     docker-compose -f "$COMPOSE_FILE" up -d
 done
 
+
+cd ./Sensores
+docker-compose up -d --scale temperature-humidity-sensors=4
+docker-compose up -d --scale occupancy-sensors=6
+docker-compose up -d --scale power-consumption-meters=7
+docker-compose up -d --scale security-cameras=3
+
 echo "All services are up and running!"
