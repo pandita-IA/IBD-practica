@@ -11,6 +11,16 @@ cd ./Sensores
 chmod +x wait-for-it.sh
 cd ../
 
+# ir a Consumers y dar permisos
+cd ./Consumers
+chmod +x wait-for-it.sh
+cd ../
+
+
+docker network create sensores
+docker network create consumer
+
+
 
 # Define your compose files or directories
 COMPOSE_FILES=(

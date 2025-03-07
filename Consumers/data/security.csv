@@ -98,3 +98,6 @@ b'Security alert'
 "b'{""status"": ""inactive"", ""alert"": ""motion detected"", ""alert_level"": ""high""}'"
 "b'{""status"": ""active"", ""alert"": null, ""alert_level"": null}'"
 active,,
+inactive,abandoned object,high
+inactive,,
+inactive,abandoned object,high
