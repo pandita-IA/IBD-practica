@@ -1,3 +1,9 @@
 status,alert,alert_level
 inactive,,
 inactive,motion detected,low
+inactive,unauthorized person,medium
+inactive,,
+inactive,motion detected,high
+inactive,abandoned object,low
+inactive,motion detected,low
+inactive,,
