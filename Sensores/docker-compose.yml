@@ -1,0 +1,73 @@
+services:
+
+  temperature-humidity-sensors:
+    env_file:
+      - .env
+
+    container_name: temperature-humidity-sensors
+    build:
+      context: ./Sensores
+      dockerfile: Dockerfile
+    # command: ["./wait-for-it.sh", "api:5000", "--", "python", "-u", "app.py"]
+    volumes:
+      - "./Temperature-Humidity Sensors:/app"
+    command: ["python", "-u", "./app.py"]
+
+    networks:
+      - sensores
+
+  occupancy-sensors:
+    env_file:
+      - .env
+    container_name: occupancy-sensors
+    build:
+      context: ./Sensores
+      dockerfile: Dockerfile
+    command: ["python", "-u", "app.py"]
+
+    # command: ["./wait-for-it.sh", "api:5000", "--", "python", "-u", "app.py"]
+
+    volumes:
+      - "./Occupancy Sensors:/app"
+    networks:
+      - sensores
+
+
+  power-consumption-meters:
+    env_file:
+      - .env
+    container_name: power-consumption-meters
+    build:
+      context: ./Sensores
+      dockerfile: Dockerfile
+    command: ["python", "-u", "app.py"]
+
+    # command: ["./wait-for-it.sh", "api:5000", "--", "python", "-u", "app.py"]
+
+    volumes:
+      - "./Power Consumption Meters:/app"
+
+    networks:
+      - sensores
+
+  security-cameras:
+    env_file:
+      - .env  
+    container_name: security-cameras
+    build:
+      context: ./Sensores
+      dockerfile: Dockerfile
+    command: ["python", "-u", "app.py"]
+
+    # command: ["./wait-for-it.sh", "api:5000", "--", "python", "-u", "app.py"]
+
+    volumes:
+      - "./Security Cameras:/app"
+
+    networks:
+      - sensores
+
+networks:
+  sensores:
+    driver: bridge
+    external: true  
