@@ -14,16 +14,16 @@ app = Flask(__name__)
 """
 
 def read_api_ocupacion():
-    return os.getenv('API_OCUPACION', 'http://ocupacion:5000/ocupacion')
+    return os.getenv('API_OCUPACION', 'http://ocupacion:5001/ocupacion')
 
 def read_api_power():
-    return os.getenv('API_POWER', 'http://power:5000/power')
+    return os.getenv('API_POWER', 'http://power:5001/power')
 
 def read_api_temperatura():
-    return os.getenv('API_TEMPERATURA', 'http://temperatura:5000/temperatura')
+    return os.getenv('API_TEMPERATURA', 'http://temperatura:5001/temperatura')
 
 def read_api_seguridad():
-    return os.getenv('API_SEGURIDAD', 'http://seguridad:5000/seguridad')
+    return os.getenv('API_SEGURIDAD', 'http://seguridad:5001/seguridad')
 
 
 QUEUES = ['occupancy', 'power', 'temperature', 'security']
@@ -36,15 +36,25 @@ channel = connection.channel()
 
 channel.exchange_declare(exchange='sensor', exchange_type='headers', durable=True)
 
+
 for queue in QUEUES:
     channel.queue_declare(queue=queue, durable=True)
-    channel.queue_bind(exchange='sensor', queue=queue, headers={'queue': queue})
 
+    binding_headers = {
+        'x-match': 'all',
+        'queue': queue
+    }
+
+    channel.queue_bind(exchange='sensor', queue=queue, arguments=binding_headers)
+
+    print(f'Queue {queue} created and binded to exchange sensor with headers {binding_headers}')
 
 
 def send_to_queue(data):
     # get_header from request
     headers = request.headers
+    print('Headers:', headers)
+    print('Data:', data)
     channel.basic_publish(exchange='', routing_key=headers.get('queue'), body=json.dumps(data))
     # connection.close()
 

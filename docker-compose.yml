@@ -15,6 +15,10 @@ services:
       RABBITMQ_USERNAME: user
       RABBITMQ_PASSWORD: password
       RABBITMQ_HOST: rabbitmq
+      API_OCUPACION: http://api-containers:5000/occupancy
+      API_POWER: http://api-containers:5000/power
+      API_TEMPERATURA: http://api-containers:5000/temperature
+      API_SEGURIDAD: http://api-containers:5000/security
 
       
 

@@ -25,5 +25,12 @@ GET /temperatura/
 GET /tempratura/{fecha}
 
 
+To execute the project, you need to have docker and docker-compose installed and run the following command:
+
+```bash
+bash setup.sh
+```
+
+
 
 
