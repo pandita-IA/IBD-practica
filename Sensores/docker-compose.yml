@@ -2,7 +2,6 @@ services:
 
   temperature-humidity-sensors:
 
-    container_name: temperature-humidity-sensors
     build:
       context: ./
       dockerfile: Dockerfile
@@ -25,7 +24,6 @@ services:
       - sensores
 
   occupancy-sensors:
-    container_name: occupancy-sensors
     build:
       context: ./
       dockerfile: Dockerfile
@@ -50,7 +48,6 @@ services:
 
 
   power-consumption-meters:
-    container_name: power-consumption-meters
     build:
       context: ./
       dockerfile: Dockerfile
@@ -76,7 +73,6 @@ services:
     command: ["./wait-for-it.sh", "api:5000", "--", "python", "-u", "app.py"]
 
   security-cameras:
-    container_name: security-cameras
     build:
       context: ./
       dockerfile: Dockerfile
