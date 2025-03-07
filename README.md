@@ -1,5 +1,9 @@
 # Práctica I IBD
 
+** La version v1.0.0 emplea nuestras imagenes propias del docker hub**
+
+** La version v1.0.0.0 no emplea imágenes propias**
+
 ## Integrantes
 - **Xuerong**
 - **Rafia**
