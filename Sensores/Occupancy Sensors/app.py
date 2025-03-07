@@ -26,7 +26,8 @@ if __name__ == "__main__":
     while True:
         sensor_data = simulate_sensor()
         try:
-            response = requests.post(url, json=sensor_data)
+            headers = {"queue": "occupancy"}
+            response = requests.post(url, json=sensor_data, headers=headers)
             print(f"Enviando datos: {sensor_data} | Respuesta: {response.status_code}")
         except Exception as e:
             print("Error al enviar datos:", e)
