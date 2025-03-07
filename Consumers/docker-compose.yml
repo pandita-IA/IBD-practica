@@ -8,33 +8,27 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: user
       RABBITMQ_DEFAULT_PASS: password
-      
+
     networks:
       - consumer
-  
-  publisher:
-    image: bigdatainf/python:latest
-    volumes:
-      - ./publisher:/app
-    working_dir: /app
-    command: python -u publish_prueba.py
-    environment:
-      - RABBITMQ_HOST=rabbitmq
-      - RABBITMQ_USERNAME=user
-      - RABBITMQ_PASSWORD=password
-    depends_on:
-      - rabbitmq
-    networks:
-      - consumer
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+    restart: always
 
 
   consumer_occupancy:
-    image: bigdatainf/python:latest
+    image: pandira/practica1-consumers:v1.0.4
     volumes:
       - ./consumer:/app
       - ./data:/data
+      - ./wait-for-it.sh:/app/wait-for-it.sh
+
     working_dir: /app
-    command: python -u occupancy_consumer.py
+    command: ["./wait-for-it.sh", "rabbitmq:5672", "--", "python", "-u", "occupancy_consumer.py"]
     environment:
       - RABBITMQ_HOST=rabbitmq
       - RABBITMQ_USERNAME=user
@@ -46,12 +40,15 @@ services:
 
 
   consumer_power:
-    image: bigdatainf/python:latest
+    image: pandira/practica1-consumers:v1.0.4
+
     volumes:
       - ./consumer:/app
       - ./datnetworkNamea:/data
+      - ./wait-for-it.sh:/app/wait-for-it.sh
+
     working_dir: /app
-    command: python -u power_consumer.py
+    command: ["./wait-for-it.sh", "rabbitmq:5672", "--", "python", "-u", "power_consumer.py"]
     environment:
       - RABBITMQ_HOST=rabbitmq
       - RABBITMQ_USERNAME=user
@@ -63,12 +60,14 @@ services:
 
 
   consumer_security:
-    image: bigdatainf/python:latest
+    image: pandira/practica1-consumers:v1.0.4
     volumes:
       - ./consumer:/app
       - ./data:/data
+      - ./wait-for-it.sh:/app/wait-for-it.sh
+
     working_dir: /app
-    command: python -u security_consumer.py
+    command: ["./wait-for-it.sh", "rabbitmq:5672", "--", "python", "-u", "security_consumer.py"]
     environment:
       - RABBITMQ_HOST=rabbitmq
       - RABBITMQ_USERNAME=user
@@ -80,12 +79,15 @@ services:
 
 
   consumer_temperature:
-    image: bigdatainf/python:latest
+    image: pandira/practica1-consumers:v1.0.4
+
     volumes:
       - ./consumer:/app
       - ./data:/data
+      - ./wait-for-it.sh:/app/wait-for-it.sh
+
     working_dir: /app
-    command: python -u temperature_consumer.py
+    command: ["./wait-for-it.sh", "rabbitmq:5672", "--", "python", "-u", "temperature_consumer.py"]
     environment:
       - RABBITMQ_HOST=rabbitmq
       - RABBITMQ_USERNAME=user
@@ -97,15 +99,15 @@ services:
 
 
   api-containers:
-    image: bigdatainf/python:latest
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: pandira/practica1-consumers:v1.0.4
+
     volumes:
       - ./api:/app
       - ./data:/data  # CSVs
+      - ./wait-for-it.sh:/app/wait-for-it.sh
+
     working_dir: /app
-    command: python -u api.py
+    command: ["./wait-for-it.sh", "rabbitmq:5672", "--", "python", "-u", "api.py"]
     environment:
       - PATH_FILE_OCUPACION=/data/occupancy.csv
       - PATH_FILE_POWER=/data/power.csv

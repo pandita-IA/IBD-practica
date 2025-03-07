@@ -1,15 +1,15 @@
 services:
   api:
-    image: python:3.8
+    image: pandira/practica1-api:v1.0.0
+
     container_name: api
-    build:
-      context: ./api
-      dockerfile: Dockerfile
+
     ports:
       - "5000:5000"
 
     volumes:
       - ./api:/app
+      - ./wait-for-it.sh:/app/wait-for-it.sh
 
     environment:
       RABBITMQ_USERNAME: user
@@ -20,8 +20,6 @@ services:
       API_TEMPERATURA: http://api-containers:5000/temperature
       API_SEGURIDAD: http://api-containers:5000/security
 
-      
-
     healthcheck:
       test: ["CMD", "curl", "-f", "http://api:5000/health"]
       interval: 1m30s
@@ -31,7 +29,9 @@ services:
     networks:
       - sensores
       - consumer
+    command: ["./wait-for-it.sh", "rabbitmq:5672", "--", "python", "-u", "app.py"]
 
+    restart: always
 networks:
   sensores:
     driver: bridge

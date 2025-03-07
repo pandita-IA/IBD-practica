@@ -1,16 +1,23 @@
 #### Inicializamos el container de los contenedores
 
 
-# ir a api y dar permisos
+# # ir a api y dar permisos
 cd ./api
 chmod +x wait-for-it.sh
 cd ../
 
-# ir a Sensores y dar permisos
+# # ir a Sensores y dar permisos
 cd ./Sensores
 chmod +x wait-for-it.sh
 cd ../
 
+# # ir a Consumers y dar permisos
+cd ./Consumers
+chmod +x wait-for-it.sh
+cd ../
+
+docker network create sensores
+docker network create consumer
 
 # Define your compose files or directories
 COMPOSE_FILES=(

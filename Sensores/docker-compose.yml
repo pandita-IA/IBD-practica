@@ -1,68 +1,66 @@
 services:
 
   temperature-humidity-sensors:
-    env_file:
-      - .env
 
     container_name: temperature-humidity-sensors
-    build:
-      context: ./Sensores
-      dockerfile: Dockerfile
+    image: pandira/practica1-sensores:v1.0.0   
     # command: ["./wait-for-it.sh", "api:5000", "--", "python", "-u", "app.py"]
+    environment:
+      API_URL: "http://api:5000/sensor-data"
     volumes:
       - "./Temperature-Humidity Sensors:/app"
-    command: ["python", "-u", "./app.py"]
+      - "./wait-for-it.sh:/app/wait-for-it.sh"
+    
+    command: ["./wait-for-it.sh", "api:5000", "--", "python", "-u", "app.py"]
 
     networks:
       - sensores
 
   occupancy-sensors:
-    env_file:
-      - .env
     container_name: occupancy-sensors
-    build:
-      context: ./Sensores
-      dockerfile: Dockerfile
-    command: ["python", "-u", "app.py"]
+    image: pandira/practica1-sensores:v1.0.0   
+    environment:
+      API_URL: "http://api:5000/sensor-data"
 
     # command: ["./wait-for-it.sh", "api:5000", "--", "python", "-u", "app.py"]
 
     volumes:
       - "./Occupancy Sensors:/app"
+      - "./wait-for-it.sh:/app/wait-for-it.sh"
+    command: ["./wait-for-it.sh", "api:5000", "--", "python", "-u", "app.py"]
     networks:
       - sensores
 
 
   power-consumption-meters:
-    env_file:
-      - .env
     container_name: power-consumption-meters
-    build:
-      context: ./Sensores
-      dockerfile: Dockerfile
-    command: ["python", "-u", "app.py"]
+    image: pandira/practica1-sensores:v1.0.0
+    environment:
+      API_URL: "http://api:5000/sensor-data"
 
     # command: ["./wait-for-it.sh", "api:5000", "--", "python", "-u", "app.py"]
 
     volumes:
       - "./Power Consumption Meters:/app"
+      - "./wait-for-it.sh:/app/wait-for-it.sh"
+    command: ["./wait-for-it.sh", "api:5000", "--", "python", "-u", "app.py"]
 
     networks:
       - sensores
 
   security-cameras:
-    env_file:
-      - .env  
     container_name: security-cameras
-    build:
-      context: ./Sensores
-      dockerfile: Dockerfile
-    command: ["python", "-u", "app.py"]
+    image: pandira/practica1-sensores:v1.0.0
+
+    environment:
+      API_URL: "http://api:5000/sensor-data"
 
     # command: ["./wait-for-it.sh", "api:5000", "--", "python", "-u", "app.py"]
 
     volumes:
       - "./Security Cameras:/app"
+      - "./wait-for-it.sh:/app/wait-for-it.sh"
+    command: ["./wait-for-it.sh", "api:5000", "--", "python", "-u", "app.py"]
 
     networks:
       - sensores
