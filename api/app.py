@@ -26,16 +26,26 @@ def read_api_seguridad():
     return os.getenv('API_SEGURIDAD', 'http://seguridad:5000/seguridad')
 
 
+QUEUES = ['occupancy', 'power', 'temperature', 'security']
+
+rabbitmq_host = os.getenv('RABBITMQ_HOST')
+rabbitmq_credentials = pika.PlainCredentials(os.getenv('RABBITMQ_USERNAME'),os.getenv('RABBITMQ_PASSWORD'))
+connection = pika.BlockingConnection(pika.ConnectionParameters(host=rabbitmq_host,credentials=rabbitmq_credentials))
+
+channel = connection.channel()
+
+channel.exchange_declare(exchange='sensor', exchange_type='headers', durable=True)
+
+for queue in QUEUES:
+    channel.queue_declare(queue=queue, durable=True)
+    channel.queue_bind(exchange='sensor', queue=queue, headers={'queue': queue})
+
 
 
 def send_to_queue(data):
-    rabbitmq_host = os.getenv('RABBITMQ_HOST')
-    rabbitmq_credentials = pika.PlainCredentials(os.getenv('RABBITMQ_USERNAME'),os.getenv('RABBITMQ_PASSWORD'))
-    connection = pika.BlockingConnection(pika.ConnectionParameters(host=rabbitmq_host,credentials=rabbitmq_credentials))
-    
-    channel = connection.channel()
-    channel.queue_declare(queue='data')
-    channel.basic_publish(exchange='', routing_key='data', body=json.dumps(data))
+    # get_header from request
+    headers = request.headers
+    channel.basic_publish(exchange='', routing_key=headers.get('queue'), body=json.dumps(data))
     # connection.close()
 
     
