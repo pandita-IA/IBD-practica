@@ -9,6 +9,7 @@
 - **Rafia**
 - **Yingying**
 
+
 ## Descripción
 En esta práctica el objetivo es crear una infraestructura escalable para gestionar los datos que recibimos de unos sensores. Para ello se ha decidido utilizar una api rest que se encargara de forwardear los datos a rabbitmq para organizarlos por cola para posteriormente ser escritos en un csv. En cuanto a las lecturas hemos decidido crear un api que nos permita leer los datos de los csv y responde a las peticiones de la api rest.
 
@@ -60,3 +61,8 @@ bash setup.sh
 We are using not the images hosted in docker hub.
 
 In case there is problems with the containers try to **restart the api container**.
+
+
+## Next steps
+
+Use args for changing the temporal logic of the sensors and have them in separated csvs
